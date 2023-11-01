@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RestController
@@ -28,5 +29,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginDto loginDto) {
         return new ResponseEntity(userService.login(loginDto), HttpStatus.OK);
+    }
+
+    @PostMapping("/uploadImage")
+    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file) {
+        return new ResponseEntity(userService.uploadImage(file), HttpStatus.OK);
     }
 }

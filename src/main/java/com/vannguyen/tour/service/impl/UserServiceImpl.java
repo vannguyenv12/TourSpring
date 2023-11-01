@@ -1,5 +1,6 @@
 package com.vannguyen.tour.service.impl;
 
+import com.vannguyen.tour.cloudinary.Upload;
 import com.vannguyen.tour.entity.Role;
 import com.vannguyen.tour.entity.User;
 import com.vannguyen.tour.exception.UnauthorizeException;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +35,7 @@ public class UserServiceImpl implements IUserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final Upload upload;
 
     @Override
     public AuthResponse register(RegisterDto registerDto) {
@@ -69,6 +72,14 @@ public class UserServiceImpl implements IUserService {
         AuthResponse authResponse = new AuthResponse(loginDto.getEmail(), access_token);
 
         return authResponse;
+    }
+
+    @Override
+    public String uploadImage(MultipartFile file) {
+        User user = this.getCurrentUser();
+        String imageUrl = upload.uploadImageToCloudinary(file);
+        user.setPhoto(imageUrl);
+        return  "Upload Image Successfully: " + imageUrl;
     }
 
     @Override
